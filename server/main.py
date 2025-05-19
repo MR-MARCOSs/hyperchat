@@ -1,4 +1,7 @@
-from fastapi import FastAPI, WebSocket, File, UploadFile
+from fastapi import FastAPI, WebSocket, File, UploadFile, Request
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 import os
 from fastapi.websockets import WebSocketDisconnect
 from server.websocket.manager import ConnectionManager
@@ -6,9 +9,15 @@ from server.database.database import save_message, get_last_messages
 
 app = FastAPI()
 
-@app.get("/")
-async def home():
-    return {"message": "HyperChat está no ar!"}
+# Montar pasta de arquivos estáticos (CSS, JS, etc.)
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Configurar pasta de templates
+templates = Jinja2Templates(directory="templates")
+
+@app.get("/", response_class=HTMLResponse)
+async def get_home(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
 manager = ConnectionManager()
 
