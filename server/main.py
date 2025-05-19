@@ -1,23 +1,22 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
-from fastapi.staticfiles import StaticFiles
-from websocket.manager import ConnectionManager
-import uvicorn
+from fastapi import FastAPI, WebSocket
+from fastapi.websockets import WebSocketDisconnect
+from server.websocket.manager import ConnectionManager
 
 app = FastAPI()
 
-# Gerenciador de conexões WebSocket
+@app.get("/")
+async def home():
+    return {"message": "HyperChat está no ar!"}
+
 manager = ConnectionManager()
 
-@app.websocket("/ws/{client_id}")
-async def websocket_endpoint(websocket: WebSocket, client_id: int):
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
     await manager.connect(websocket)
     try:
         while True:
             data = await websocket.receive_text()
-            await manager.broadcast(f"Client #{client_id}: {data}")
+            await manager.broadcast(f"Nova mensagem: {data}")
     except WebSocketDisconnect:
         manager.disconnect(websocket)
-        await manager.broadcast(f"Client #{client_id} left the chat")
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+        await manager.broadcast("Um usuário saiu do chat.")

@@ -1,5 +1,4 @@
-fastapi==0.95.2
-uvicorn==0.22.0
-websockets==11.0.3
-python-jose==3.3.0
-passlib==1.7.4
+fastapi
+uvicorn
+websockets
+pydantic
