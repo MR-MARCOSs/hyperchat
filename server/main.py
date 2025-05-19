@@ -24,9 +24,16 @@ async def websocket_endpoint(websocket: WebSocket, username: str):
     try:
         while True:
             data = await websocket.receive_text()
+            
+            # Tratar notificação de digitação
             if data == "/typing":
                 await manager.typing_notification(username)
-
+                continue
+            
+            # Quando enviar mensagem real, parar de mostrar "digitando"
+            if username in manager.typing_users:
+                manager.typing_users.remove(username)
+                await manager._broadcast_typing_status()
             
             if data.startswith("@"):  # Mensagem privada
                 parts = data.split(" ", 2)
@@ -34,10 +41,11 @@ async def websocket_endpoint(websocket: WebSocket, username: str):
                     receiver, private_msg = parts[1], parts[2]
                     await manager.send_private_message(username, receiver, private_msg)
                 else:
-                    await websocket.send_text("Formato inválido. Use: @destinatario mensagem")
+                    await websocket.send_text("Formato inválido. Use: @destinatário mensagem")
             else:  # Mensagem pública
                 save_message(username, data)
                 await manager.broadcast(f"{username}: {data}")
+                
     except WebSocketDisconnect:
         manager.disconnect(websocket)
         await manager.broadcast(f"{username} saiu do chat.")
