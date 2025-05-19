@@ -1,6 +1,7 @@
 from fastapi import FastAPI, WebSocket
 from fastapi.websockets import WebSocketDisconnect
 from server.websocket.manager import ConnectionManager
+from server.database.database import save_message, get_last_messages
 
 app = FastAPI()
 
@@ -10,13 +11,21 @@ async def home():
 
 manager = ConnectionManager()
 
-@app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
-    await manager.connect(websocket)
+@app.websocket("/ws/{username}")
+async def websocket_endpoint(websocket: WebSocket, username: str):
+    await manager.connect(websocket, username)
+    await manager.broadcast(f"{username} entrou no chat.")
+    # Enviar mensagens anteriores ao usuário conectado
+    last_messages = get_last_messages()
+    for msg in reversed(last_messages):  # Reverter para ordem cronológica
+        await websocket.send_text(f"[{msg[2]}] {msg[0]}: {msg[1]}")
+
     try:
         while True:
             data = await websocket.receive_text()
-            await manager.broadcast(f"Nova mensagem: {data}")
+            save_message(username, data)  # Salvar no banco
+            await manager.broadcast(f"{username}: {data}")
     except WebSocketDisconnect:
         manager.disconnect(websocket)
-        await manager.broadcast("Um usuário saiu do chat.")
+        await manager.broadcast(f"{username} saiu do chat.")
+
