@@ -1,4 +1,9 @@
 const ws = new WebSocket("ws://127.0.0.1:8000/ws/" + prompt("Digite seu nome de usuário:"));
+const input = document.getElementById('messageInput');
+
+input.addEventListener('input', () => {
+    ws.send("/typing");
+});
 
 ws.onmessage = function (event) {
     const messages = document.getElementById("messages");
@@ -12,3 +17,4 @@ function sendMessage() {
     ws.send(input.value);
     input.value = "";
 }
+
