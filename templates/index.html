@@ -3,86 +3,97 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HyperChat | Mensagens Instantâneas</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
+    <title>FastAPI Chat</title>
+    <link rel="stylesheet" href="/static/style.css" />
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
-    <link rel="stylesheet" href="../static/style.css" />
+    <!-- Para ícones -->
   </head>
   <body>
-    <div class="app-container">
-      <header>
-        <div class="logo">
-          <i class="fas fa-bolt"></i>
-          <span>HyperChat</span>
-        </div>
+    <div class="chat-container">
+      <aside class="sidebar">
         <div class="user-info">
-          <div class="user-avatar" id="userAvatar">U</div>
-          <span id="username">Usuário</span>
-          <button class="btn btn-logout" id="logoutBtn">
+          <i class="fas fa-user-circle"></i>
+          <span id="current-username">Carregando...</span>
+          <button id="logout-btn" title="Sair">
             <i class="fas fa-sign-out-alt"></i>
           </button>
         </div>
-      </header>
 
-      <div class="chat-container">
-        <div class="sidebar">
-          <div class="search-bar">
+        <div class="sidebar-section">
+          <h3>Buscar Usuários</h3>
+          <div class="search-box">
             <input
               type="text"
-              class="search-input"
-              id="userSearch"
-              placeholder="Pesquisar usuários..."
+              id="user-search-input"
+              placeholder="Buscar por nome..."
             />
-            <div class="search-results" id="searchResults"></div>
+            <i class="fas fa-search"></i>
           </div>
-          <div class="contacts">
-            <div class="contact chat-general selected" data-chat="general">
-              <div class="contact-avatar">#</div>
-              <div class="contact-info">
-                <div class="contact-name">Chat Geral</div>
-              </div>
-            </div>
-            <!-- Contatos privados serão adicionados dinamicamente -->
-          </div>
+          <ul id="user-search-results" class="user-list">
+            <!-- Resultados da busca aqui -->
+          </ul>
         </div>
 
-        <div class="chat-area">
-          <div class="messages-container" id="messages">
-            <!-- Mensagens serão adicionadas dinamicamente -->
-            <div class="status" id="connectionStatus">
-              Conectando ao servidor...
-            </div>
-          </div>
-
-          <div class="input-area">
-            <label for="fileInput" class="btn">
-              <i class="fas fa-paperclip"></i>
-            </label>
-            <input type="file" id="fileInput" class="file-input" />
-
-            <input
-              type="text"
-              class="message-input"
-              id="messageInput"
-              placeholder="Digite sua mensagem..."
-              autocomplete="off"
-            />
-
-            <button class="btn btn-primary" onclick="sendMessage()">
-              <i class="fas fa-paper-plane"></i>
-            </button>
-          </div>
+        <div class="sidebar-section">
+          <h3>Chats Recentes</h3>
+          <ul id="recent-chats-list" class="user-list">
+            <!-- Contatos recentes aqui -->
+            <li class="active" data-chat-target="general">
+              <i class="fas fa-users"></i> Chat Geral
+            </li>
+          </ul>
         </div>
-      </div>
+      </aside>
+
+      <main class="chat-area">
+        <header class="chat-header">
+          <h2 id="chat-target-name">Chat Geral</h2>
+          <!-- Ícone de status, etc. -->
+        </header>
+
+        <div class="message-box" id="chat-box">
+          <!-- Mensagens serão carregadas aqui -->
+          <!-- Exemplo de mensagem:
+                <div class="message received">
+                    <span class="message-sender">UsuárioX</span>
+                    <span class="message-content">Olá!</span>
+                    <span class="message-timestamp">HH:MM</span>
+                </div>
+                <div class="message sent">
+                    <span class="message-sender">Você</span>
+                    <span class="message-content">E aí!</span>
+                    <span class="message-timestamp">HH:MM</span>
+                </div>
+                -->
+        </div>
+
+        <div class="typing-indicator" id="typing-indicator">
+          <!-- Indica quem está digitando -->
+        </div>
+
+        <div class="message-input-area">
+          <input
+            type="text"
+            id="messageInput"
+            placeholder="Digite sua mensagem..."
+          />
+          <label for="fileInput" class="upload-button" title="Enviar arquivo">
+            <i class="fas fa-paperclip"></i>
+            <input type="file" id="fileInput" style="display: none" />
+          </label>
+
+          <button id="sendMessageBtn" title="Enviar">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+          <button id="uploadBtn" style="display: none">Enviar Arquivo</button>
+          <!-- Botão de upload pode ser visível após selecionar -->
+        </div>
+      </main>
     </div>
 
-    <script src="../static/chat_func.js"></script>
-    <script src="../static/app.js"></script>
+    <script src="/static/script.js"></script>
   </body>
 </html>
