@@ -4,3 +4,10 @@ pydantic==1.10.22
 python-multipart==0.0.20
 uvicorn[standard]==0.22.0
 jinja2
+sqlalchemy
+psycopg2-binary
+bcrypt
+asyncpg
+passlib
+python-jose
+PyJWT
