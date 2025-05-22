@@ -302,6 +302,75 @@ header {
   text-align: center;
 }
 
+/* Search results */
+.search-results {
+  position: absolute;
+  width: calc(100% - 20px);
+  max-height: 300px;
+  overflow-y: auto;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  margin-top: 5px;
+  display: none;
+}
+
+.search-results.show {
+  display: block;
+}
+
+.search-result-item {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.search-result-item:hover {
+  background-color: #f5f5f5;
+}
+
+/* Typing indicator */
+.typing-indicator {
+  font-size: 0.8em;
+  color: #666;
+  padding: 5px 10px;
+  font-style: italic;
+}
+
+/* Contact notification */
+.contact-notification {
+  width: 8px;
+  height: 8px;
+  background-color: #4caf50;
+  border-radius: 50%;
+  margin-left: auto;
+}
+
+.contact-notification.hidden {
+  visibility: hidden;
+}
+
+/* Logout button */
+.btn-logout {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.btn-logout:hover {
+  color: #333;
+}
+
+/* General chat indicator */
+.chat-general .contact-avatar {
+  background-color: #4caf50;
+  color: white;
+}
+
 @media (max-width: 768px) {
   .sidebar {
     width: 100%;

@@ -1,25 +1,40 @@
-import sqlite3
+import asyncpg
+import os
 
-def get_connection():
-    conn = sqlite3.connect("chat.db", check_same_thread=False)
-    conn.execute(
-        """CREATE TABLE IF NOT EXISTS messages (
-           id INTEGER PRIMARY KEY AUTOINCREMENT,
-           username TEXT NOT NULL,
-           message TEXT NOT NULL,
-           timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-        )"""
+async def save_message(username: str, content: str):
+    conn = await asyncpg.connect(
+        user=os.getenv("POSTGRES_USER", "myuser"),
+        password=os.getenv("POSTGRES_PASSWORD", "mypassword"),
+        database=os.getenv("POSTGRES_DB", "mydatabase"),
+        host=os.getenv("POSTGRES_HOST", "localhost"),
+        port=os.getenv("POSTGRES_PORT", "5432")
     )
-    return conn
+    try:
+        await conn.execute(
+            "INSERT INTO messages (username, content) VALUES ($1, $2)",
+            username, content
+        )
+    except Exception as e:
+        print(f"Erro ao salvar mensagem: {e}")
+    finally:
+        await conn.close()
 
-def save_message(username: str, message: str):
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("INSERT INTO messages (username, message) VALUES (?, ?)", (username, message))
-    conn.commit()
-
-def get_last_messages(limit=50):
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT username, message, timestamp FROM messages ORDER BY timestamp DESC LIMIT ?", (limit,))
-    return cursor.fetchall()
+async def get_last_messages(limit: int = 10):
+    conn = await asyncpg.connect(
+        user=os.getenv("POSTGRES_USER", "myuser"),
+        password=os.getenv("POSTGRES_PASSWORD", "mypassword"),
+        database=os.getenv("POSTGRES_DB", "mydatabase"),
+        host=os.getenv("POSTGRES_HOST", "localhost"),
+        port=os.getenv("POSTGRES_PORT", "5432")
+    )
+    try:
+        rows = await conn.fetch(
+            "SELECT username, content, timestamp FROM messages ORDER BY timestamp DESC LIMIT $1",
+            limit
+        )
+        return rows
+    except Exception as e:
+        print(f"Erro ao buscar mensagens: {e}")
+        return []
+    finally:
+        await conn.close()

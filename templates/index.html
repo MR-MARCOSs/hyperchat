@@ -24,6 +24,9 @@
         <div class="user-info">
           <div class="user-avatar" id="userAvatar">U</div>
           <span id="username">Usuário</span>
+          <button class="btn btn-logout" id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i>
+          </button>
         </div>
       </header>
 
@@ -33,11 +36,19 @@
             <input
               type="text"
               class="search-input"
-              placeholder="Pesquisar conversas..."
+              id="userSearch"
+              placeholder="Pesquisar usuários..."
             />
+            <div class="search-results" id="searchResults"></div>
           </div>
           <div class="contacts">
-            <!-- Contatos serão adicionados dinamicamente -->
+            <div class="contact chat-general selected" data-chat="general">
+              <div class="contact-avatar">#</div>
+              <div class="contact-info">
+                <div class="contact-name">Chat Geral</div>
+              </div>
+            </div>
+            <!-- Contatos privados serão adicionados dinamicamente -->
           </div>
         </div>
 

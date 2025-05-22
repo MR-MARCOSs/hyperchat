@@ -48,7 +48,7 @@ class ConnectionManager:
             self.typing_tasks[username].cancel()
             del self.typing_tasks[username]
 
-    async def _remove_typing_after_delay(self, username: str, delay: int = 3):
+    async def _remove_typing_after_delay(self, username: str, delay: int = 2):
         try:
             await asyncio.sleep(delay)
             if username in self.typing_users:
