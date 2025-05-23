@@ -1,6 +1,5 @@
 import asyncpg
 import os
-# Importar datetime para usar no timestamp das mensagens salvas
 from datetime import datetime, timezone
 
 async def get_db_connection(): # Mova esta função para database.py para centralizar

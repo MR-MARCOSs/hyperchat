@@ -5,7 +5,7 @@ import os
 import asyncpg
 from fastapi.responses import JSONResponse
 
-# Import your database and utility functions
+
 from server.database.database import (
     get_last_messages,
     get_user_id_by_username,
@@ -21,7 +21,7 @@ from server.utils.utils import create_access_token, hash_password, verify_passwo
 
 router = APIRouter()
 
-# ✅ Helper to extract authenticated username or raise HTTPException
+
 async def get_authenticated_username(request: Request) -> str:
     auth_response = await get_current_user(request)
     if isinstance(auth_response, JSONResponse):
@@ -68,9 +68,15 @@ async def login(user: UserLogin):
         response = JSONResponse(content={"message": "Login bem-sucedido."})
         response.set_cookie(key="access_token", value=f"Bearer {token}", httponly=True)
         return response
+
+    except HTTPException as http_exc:
+        
+        raise http_exc
+
     except Exception as e:
         print("Erro durante o login:", traceback.format_exc())
         raise HTTPException(status_code=500, detail="Erro interno ao fazer login.")
+
     finally:
         await conn.close()
 
